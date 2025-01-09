@@ -143,12 +143,12 @@ for index, row in df.iterrows():
         driver.quit()
         exit(1) 
 
-# Afficher le texte de la page
+# save in txt file the result:
 message_element = driver.find_element(By.CLASS_NAME, "message2")
 message_text = message_element.text
 with open("result.txt", "w", encoding="utf-8") as file:
     file.write(message_text)
 
 
-# Fermer le navigateur si le script a bien terminé
+# close the browser:
 driver.quit()
