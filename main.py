@@ -10,7 +10,7 @@ try:
     subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"])
 except subprocess.CalledProcessError as error:
     print("Error during installation:", error)
-    sys.exit(1)  # Exit if installation fails
+    sys.exit(1)
 
 # Run the script based on the chosen mode and browser
 if mode == 'normal':
