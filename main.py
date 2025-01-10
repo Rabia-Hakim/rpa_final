@@ -15,7 +15,7 @@ except subprocess.CalledProcessError as error:
 # Run the script based on the chosen mode and browser
 if mode == 'normal':
     print(f"Running in normal mode with {browser}")
-    result = subprocess.run(["python", "rpa_challenge_all_browsers.py", browser, mode], capture_output=True, text=True)
+    result = subprocess.run(["python", "rpa_challenge.py", browser, mode], capture_output=True, text=True)
     print(result.stdout)
     if result.stderr:
         print("Error:")
@@ -23,7 +23,7 @@ if mode == 'normal':
         
 elif mode == 'headless':
     print(f"Running in headless mode with {browser}")
-    result = subprocess.run(["python", "rpa_challenge_all_browsers.py", browser, mode], capture_output=True, text=True)
+    result = subprocess.run(["python", "rpa_challenge.py", browser, mode], capture_output=True, text=True)
     print(result.stdout)
     if result.stderr:
         print("Error:")
