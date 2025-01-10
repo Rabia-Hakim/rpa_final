@@ -3,7 +3,7 @@ import sys
 
 # set the mode and the browser:
 mode = "normal"  # choose 'normal' or 'headless'
-browser = "firefox"  # choose 'chrome' or 'firefox'
+browser = "chrome"  # choose 'chrome' or 'firefox'
 
 # Install requirements
 try:
