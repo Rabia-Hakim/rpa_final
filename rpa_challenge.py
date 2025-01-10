@@ -2,19 +2,22 @@
 import argparse
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import NoSuchElementException, WebDriverException
+
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.chrome.options import Options as ChromeOptions
+
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
+
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.firefox.service import Service as FirefoxService
 
 import time
 import pandas as pd
 import os
-from selenium.common.exceptions import NoSuchElementException, WebDriverException
 
-# Browser setting (chrome, firefox):
+# Browser setting and mode setting:
 parser = argparse.ArgumentParser(description='Choose browser and mode')
 parser.add_argument('browser', choices=['chrome', 'firefox', 'edge'], help="Choose the browser: chrome, firefox, or edge")
 parser.add_argument('mode', choices=['normal', 'headless'], help="Choose the mode: normal or headless")
@@ -42,7 +45,7 @@ download_preferences = {
     "directory_upgrade": True
 }
 
-# Initializing browser options:
+# setting browser options:
 if  browser == "chrome":
     options = ChromeOptions()
     if mode == "headless":
@@ -56,7 +59,6 @@ if  browser == "chrome":
         service = ChromeService(executable_path=chromedriver_location)
         driver = webdriver.Chrome(service=service, options=options)
     else:
-    # Si chromedriver n'est pas trouvé, utiliser webdriver_manager pour télécharger le bon chromedriver
         service = ChromeService(ChromeDriverManager().install())
         driver = webdriver.Chrome(service=service, options=options)
 
@@ -69,13 +71,15 @@ elif browser == "firefox":
     options.set_preference("browser.download.useDownloadDir", True)
     options.set_preference("browser.helperApps.neverAsk.saveToDisk", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     options.set_preference("browser.download.manager.showWhenStarting", False)
+    options.binary_location = r'C:\Program Files\Mozilla Firefox\firefox.exe'
     options.page_load_strategy = 'normal'
 
     if os.path.exists(firefoxdriver_location):
         service = FirefoxService(firefoxdriver_location)
         driver = webdriver.Firefox(service=service, options=options)
     else:
-        driver = webdriver.Firefox(service=webdriver.firefox.service.Service(GeckoDriverManager().install()), options=options)
+        service = FirefoxService(GeckoDriverManager().install())
+        driver = webdriver.Firefox(service=service, options=options)
 
 # Open the Web Application:
 try:
@@ -111,7 +115,7 @@ challenge_file = os.path.join(download_location, "challenge.xlsx")
 try:
     df = pd.read_excel(challenge_file)
     df.columns = df.columns.str.strip()  
-except FileNotFoundError as e:
+except FileNotFoundError as error:
     print("excel file not found")
     driver.quit()
     exit(1)
@@ -144,8 +148,8 @@ for index, row in df.iterrows():
         submit_button = driver.find_element(By.XPATH, "/html/body/app-root/div[2]/app-rpa1/div/div[2]/form/input")
         submit_button.click()
         time.sleep(4)  
-    except WebDriverException as e:
-        print(f" Error in row submission process {index}: {e}")
+    except WebDriverException as error:
+        print(f" Error in row submission process {index}: {error}")
         driver.quit()
         exit(1) 
 
